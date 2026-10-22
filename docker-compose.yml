@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: dinesync-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - dinesync-mongo-data:/data/db
+    networks:
+      - dinesync-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dinesync-app
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongodb:27017/cafe_db
+      - JWT_SECRET=dinesync_production_jwt_secret_token_2026
+      - SESSION_SECRET=dinesync_session_production_secret_2026
+      - APP_BASE_URL=http://localhost:5000
+      - PAYMENT_MODE=test
+      - RAZORPAY_KEY_ID=rzp_test_demo_key
+      - RAZORPAY_KEY_SECRET=rzp_test_demo_secret
+      - RAZORPAY_WEBHOOK_SECRET=rzp_webhook_secret_2026
+      - RESTAURANT_NAME=DineSync Demo Restaurant
+      - RESTAURANT_GSTIN=29ABCDE1234F1Z5
+      - RESTAURANT_ADDRESS=100 Feet Road, Indiranagar, Bengaluru, Karnataka 560038
+      - RESTAURANT_PHONE=+91 98765 43210
+      - RESTAURANT_EMAIL=contact@dinesync.com
+      - RESTAURANT_TAX_RATE=5.0
+    depends_on:
+      - mongodb
+    networks:
+      - dinesync-network
+
+networks:
+  dinesync-network:
+    driver: bridge
+
+volumes:
+  dinesync-mongo-data:

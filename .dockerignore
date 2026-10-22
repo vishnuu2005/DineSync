@@ -1,0 +1,11 @@
+node_modules
+*/node_modules
+.git
+.env
+server/.env
+client/.env
+.db_storage
+server/.db_storage
+client/dist
+logs
+*.log
